@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import json
 
 # Define the URL of the article
-url = 'https://www.washingtonpost.com/national-security/2024/01/30/israel-hamas-qatar-hostage-deal/'
+url = "https://www.washingtonpost.com/politics/2024/02/02/mayorkas-impeachment-politics/"
 
 # Send a GET request to the URL
 response = requests.get(url)
@@ -15,7 +15,7 @@ soup = BeautifulSoup(response.text, 'html.parser')
 article_content = {
     "headline": None,
     "subheading": None,
-    "additional_content": []
+    "body": []
 }
 
 # Extract the headline
@@ -33,10 +33,10 @@ content_paragraphs = soup.find_all('p', class_='wpds-c-cYdRxM wpds-c-cYdRxM-iPJL
 for paragraph in content_paragraphs:
     if paragraph:
         # Append each paragraph to the additional_content list
-        article_content["additional_content"].append(paragraph.text.strip())
+        article_content["body"].append(paragraph.text.strip())
 
 # Serialize the dictionary to JSON and write it to a file
-with open('article_content.json', 'w', encoding='utf-8') as f:
+with open('washington_post_content.json', 'w', encoding='utf-8') as f:
     json.dump(article_content, f, ensure_ascii=False, indent=4)
 
 print("Content saved to article_content.json.")
