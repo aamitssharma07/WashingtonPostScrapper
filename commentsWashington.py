@@ -8,7 +8,7 @@ import time
 import json
 
 # URL to scrape
-url = "https://talk.washingtonpost.com/embed/stream?storyURL=https%3A%2F%2Fwww.washingtonpost.com%2Fbusiness%2F2024%2F01%2F31%2Fchild-tax-credit-vote-congress%2F&v=6.16.2&ts=1706894100000&initialWidth=535&childId=comments&parentTitle=Child%20tax%20credit%20expansion%20passes%20House%20-%20The%20Washington%20Post&parentUrl=https%3A%2F%2Fwww.washingtonpost.com%2Fbusiness%2F2024%2F01%2F31%2Fchild-tax-credit-vote-congress%2F"
+url = "https://talk.washingtonpost.com/embed/stream?storyURL=https%3A%2F%2Fwww.washingtonpost.com%2Fpolitics%2F2024%2F02%2F02%2Fmayorkas-impeachment-politics%2F&v=6.16.2&ts=1707178500000&initialWidth=535&childId=comments&parentTitle=The%20dicey%20push%20to%20impeach%20Secretary%20Mayorkas%20-%20The%20Washington%20Post&parentUrl=https%3A%2F%2Fwww.washingtonpost.com%2Fpolitics%2F2024%2F02%2F02%2Fmayorkas-impeachment-politics%2F"
 
 
 # url = 'https://talk.washingtonpost.com/embed/stream?storyURL=https%3A%2F%2Fwww.washingtonpost.com%2Fbusiness%2F2024%2F01%2F31%2Fchild-tax-credit-vote-congress%2F&v=6.16.2&ts=1706766300000&initialWidth=535&childId=comments&parentTitle=Child%20tax%20credit%20expansion%20passes%20House%20-%20The%20Washington%20Post&parentUrl=https%3A%2F%2Fwww.washingtonpost.com%2Fbusiness%2F2024%2F01%2F31%2Fchild-tax-credit-vote-congress%2F'
@@ -47,7 +47,7 @@ for comment in comments_elements:
         comments.append(comment_text)
 
 # Save comments to a JSON file
-with open('WashingtoncommentsHamas.json', 'w', encoding='utf-8') as file:
+with open('WashingtonComments.json', 'w', encoding='utf-8') as file:
     json.dump(comments, file, ensure_ascii=False, indent=4)
 
 # Close the browser

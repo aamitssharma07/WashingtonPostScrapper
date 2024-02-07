@@ -20,6 +20,7 @@ def scrape_article_content(url):
 
     # Initialize a dictionary to hold the content
     article_content = {
+        "url": url,
         "headline": None,
         "subheading": None,
         "additional_content": []
@@ -139,10 +140,45 @@ def scrape_and_save_comments(url):
         file.truncate()  # Truncate file to the new size
 
     # print("Comments added to article_content.json.")   
-    
-    
+  
+  
+#******New logic Of Reading the url's from file"    
+# # Function to read URLs from the JSON file
+# def read_urls_from_json(filename):
+#     with open(filename, 'r') as file:
+#         urls = json.load(file)
+#     return urls
 
-# Main Program
+# # Main function that orchestrates the scraping
+# def main():
+#     email = "mailtoammit1@gmail.com"
+#     password = "7889857046@aA"
+#     urls = read_urls_from_json('URLSWashPostPolitics.json')
+    
+#     for i, url in enumerate(urls, start=1):
+#         print(f"Processing URL {i} of {len(urls)}: {url}")
+        
+#         # Scraping article content
+#         scrape_article_content(url)
+        
+#         # Fetching the URL of Embedded HTML for comments
+#         iframe_url = fetch_comments_iframe_url(url, email, password)
+        
+#         if iframe_url:
+#             # Fetching the comments if iframe URL was successfully retrieved
+#             scrape_and_save_comments(iframe_url, f'article_content_{i}.json')
+#         else:
+#             print("Could not fetch iframe URL for comments.")
+            
+#         print(f"Data for URL {i} loaded successfully.\n")
+
+# if __name__ == "__main__":
+#     print("Keep the patience, data is getting loaded...")
+#     main()
+#     print("Congrats, data Loaded Successfully for all URLs.")
+  
+
+# Main Program(OLd)
 
 email = "mailtoammit1@gmail.com"
 password = "7889857046@aA"
@@ -159,6 +195,5 @@ iframe_url = fetch_comments_iframe_url(url, email, password)
 #Function Call for fetching the comments
 scrape_and_save_comments(iframe_url)
 print("Congrats, data Loaded Succesfully")
-
 
 

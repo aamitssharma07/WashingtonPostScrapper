@@ -18,7 +18,7 @@ driver = webdriver.Chrome(service=service)
 # Open the article URL
 # driver.get("https://www.washingtonpost.com/national-security/2024/01/30/israel-hamas-qatar-hostage-deal/")
 
-driver.get("https://www.washingtonpost.com/business/2024/01/31/child-tax-credit-vote-congress/")
+driver.get("https://www.washingtonpost.com/politics/2024/02/02/mayorkas-impeachment-politics/")
 
 # Wait and click on the sign-in button
 wait = WebDriverWait(driver, 15)
