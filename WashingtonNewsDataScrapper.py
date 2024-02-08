@@ -10,7 +10,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 import time
 
 
-#Function for Scraping heading, subheading and content of an article
+# Function for Scraping heading, subheading, and content of an article
 def scrape_article_content(url):
     # Send a GET request to the URL
     response = requests.get(url)
@@ -23,7 +23,7 @@ def scrape_article_content(url):
         "url": url,
         "headline": None,
         "subheading": None,
-        "additional_content": []
+        "article_body": None  # Storing as a single string
     }
 
     # Extract the headline
@@ -38,29 +38,27 @@ def scrape_article_content(url):
 
     # Extract the additional content
     content_paragraphs = soup.find_all('p', class_='wpds-c-cYdRxM wpds-c-cYdRxM-iPJLV-css overrideStyles font-copy')
-    for paragraph in content_paragraphs:
-        if paragraph:
-            # Append each paragraph to the additional_content list
-            article_content["additional_content"].append(paragraph.text.strip())
+    article_body = "".join(paragraph.text.strip() for paragraph in content_paragraphs)
+    article_content["article_body"] = article_body
 
     # Serialize the dictionary to JSON and write it to a file
     with open('article_content.json', 'w', encoding='utf-8') as f:
         json.dump(article_content, f, ensure_ascii=False, indent=4)
 
     # print("Content saved to article_content.json.")
-    
-   
-#Function for Scraping URL for iframe
+
+
+# Function for Scraping URL for iframe
 def fetch_comments_iframe_url(article_url, email, password):
     # Initialize WebDriver
     service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service)
     wait = WebDriverWait(driver, 15)
-    
+
     try:
         # Navigate to the article URL
         driver.get(article_url)
-        
+
         # Log in process
         sign_in_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "[data-qa='sc-account-button']")))
         sign_in_button.click()
@@ -81,7 +79,7 @@ def fetch_comments_iframe_url(article_url, email, password):
         # Extract the iframe URL
         iframe = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "div#comments iframe")))
         iframe_url = iframe.get_attribute('src')
-        
+
         return iframe_url  # Return the extracted iframe URL
 
     except Exception as e:
@@ -90,9 +88,10 @@ def fetch_comments_iframe_url(article_url, email, password):
 
     finally:
         driver.quit()  # Ensure the driver is quit regardless of success or failure
-  
-  
- # Function to scrape comments and add them to the existing JSON
+
+
+# Function to scrape comments and add them to the existing JSON
+# Function to scrape comments and add them to the existing JSON
 def scrape_and_save_comments(url):
     # Set up the WebDriver
     service = Service(ChromeDriverManager().install())
@@ -123,7 +122,7 @@ def scrape_and_save_comments(url):
     # Extract text from each comment element and store in a list
     for comment in comments_elements:
         # Extract and clean text from each comment
-        comment_text = comment.text.strip()
+        comment_text = comment.text.strip().replace('\n', '').replace('\\', '').replace('\"', '"')
         # Add comment text to the list if it's not empty
         if comment_text:
             comments.append(comment_text)
@@ -134,66 +133,28 @@ def scrape_and_save_comments(url):
     # Read the existing JSON file, update it with comments, and save back
     with open('article_content.json', 'r+', encoding='utf-8') as file:
         data = json.load(file)
-        data['comments'] = comments  # Add comments to the existing dictionary
+        data['comments'] = comments  # Store comments as a list
         file.seek(0)  # Rewind to the start of the file
         json.dump(data, file, ensure_ascii=False, indent=4)
         file.truncate()  # Truncate file to the new size
 
-    # print("Comments added to article_content.json.")   
-  
-  
-#******New logic Of Reading the url's from file"    
-# # Function to read URLs from the JSON file
-# def read_urls_from_json(filename):
-#     with open(filename, 'r') as file:
-#         urls = json.load(file)
-#     return urls
 
-# # Main function that orchestrates the scraping
-# def main():
-#     email = "mailtoammit1@gmail.com"
-#     password = "7889857046@aA"
-#     urls = read_urls_from_json('URLSWashPostPolitics.json')
-    
-#     for i, url in enumerate(urls, start=1):
-#         print(f"Processing URL {i} of {len(urls)}: {url}")
-        
-#         # Scraping article content
-#         scrape_article_content(url)
-        
-#         # Fetching the URL of Embedded HTML for comments
-#         iframe_url = fetch_comments_iframe_url(url, email, password)
-        
-#         if iframe_url:
-#             # Fetching the comments if iframe URL was successfully retrieved
-#             scrape_and_save_comments(iframe_url, f'article_content_{i}.json')
-#         else:
-#             print("Could not fetch iframe URL for comments.")
-            
-#         print(f"Data for URL {i} loaded successfully.\n")
+    # print("Comments added to article_content.json.")
 
-# if __name__ == "__main__":
-#     print("Keep the patience, data is getting loaded...")
-#     main()
-#     print("Congrats, data Loaded Successfully for all URLs.")
-  
 
-# Main Program(OLd)
+# Main Program
 
 email = "mailtoammit1@gmail.com"
 password = "7889857046@aA"
 url = 'https://www.washingtonpost.com/national-security/2024/01/30/israel-hamas-qatar-hostage-deal/'
 
 print("Keep the patience, data is getting loaded...")
-#Function call for scrapping headline, subheadline and article content
+# Function call for scraping headline, subheading, and article content
 scrape_article_content(url)
 
-#Function Call for Fetching the URL of Embedded HTML
+# Function Call for Fetching the URL of Embedded HTML
 iframe_url = fetch_comments_iframe_url(url, email, password)
 
-
-#Function Call for fetching the comments
+# Function Call for fetching the comments
 scrape_and_save_comments(iframe_url)
-print("Congrats, data Loaded Succesfully")
-
-
+print("Congrats, data Loaded Successfully")
