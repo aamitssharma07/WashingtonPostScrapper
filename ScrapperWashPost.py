@@ -10,17 +10,16 @@ from webdriver_manager.chrome import ChromeDriverManager
 import time
 import re
 
-
-
-#Fuynction for genarting the name of JSON from URL
+#Function for genarting the name of JSON from URL
 def generate_json_name(url):
-    # Extract the necessary parts from the URL using regular expressions
-    match = re.search(r'washingtonpost.com/(\w+)/(\d{4}/\d{2}/\d{2})/([\w-]+)-([\w-]+)-([\w-]+)', url)
+    match = re.search(r'https://www.washingtonpost.com/([\w-]+)/(\d{4})/(\d{2})/(\d{2})/([\w-]+)/?$', url)
     if match:
         category = match.group(1)
-        date = match.group(2).replace('/', '_')
-        first_three_words = '-'.join(match.groups()[2:5])
-        file_name = f"{category}_{date}_{first_three_words}.json"
+        year = match.group(2)
+        month = match.group(3)
+        day = match.group(4)
+        remaining_part = match.group(5)
+        file_name = f"{category}_{year}_{month}_{day}_{remaining_part}.json"
         return file_name
     else:
         return "Invalid URL format"
@@ -185,6 +184,6 @@ with open(file_path, 'r') as file:
             # Function Call for fetching the comments
             scrape_and_save_comments(iframe_url, url)
         else:
-            print(f"Unable to fetch comments for {url} due to invalid iframe URL.")   
+            print(f"Unable to fetch comments for {url} due to invalid iframe URL {iframe_url}.")   
 
 print(f"Congrats, data from {count} is loaded successfully")
