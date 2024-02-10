@@ -25,7 +25,7 @@ def fetch_url_politics_section(url, email, password):
         password_input.send_keys(password)
         sign_in_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "[data-qa='sign-in-btn'][type='submit']")))
         sign_in_button.click()
-        for _ in range(1000):
+        for _ in range(700):
             try:
                 load_more_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(),'Load more')]")))
                 driver.execute_script("arguments[0].scrollIntoView();", load_more_button)
