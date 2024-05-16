@@ -11,7 +11,7 @@ import time
 import re
 import os
 
-#Function for genarting the name of JSON from URL
+# Function for generating the name of JSON from URL
 def generate_json_name(url):
     match = re.search(r'https://www.washingtonpost.com/([\w-]+)/(\d{4})/(\d{2})/(\d{2})/([\w-]+)/?$', url)
     if match:
@@ -26,7 +26,7 @@ def generate_json_name(url):
         return "Invalid URL format"
 
 # Function for Scraping heading, subheading, and content of an article
-def scrape_article_content(url,json_name):
+def scrape_article_content(url, json_name):
     try:
         # Send a GET request to the URL
         response = requests.get(url)
@@ -76,31 +76,31 @@ def fetch_comments_iframe_url(article_url, email, password):
 
         # Navigate to the article URL
         driver.get(article_url)
-		
-		# Increase wait time
+
+        # Increase wait time
         time.sleep(3)  # Waits for 5 seconds
-		# Wait for the Sign-In button and click it
+        # Wait for the Sign-In button and click it
         wait = WebDriverWait(driver, 3)
         sign_in_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "[data-qa='sc-account-button']")))
         sign_in_button.click()
-		
+
         time.sleep(3)  # Waits for 3 seconds
-		
-		# Wait for the email input to be present, enter email and click Next
+
+        # Wait for the email input to be present, enter email and click Next
         email_input = wait.until(EC.presence_of_element_located((By.ID, "username")))
         email_input.send_keys(email)
         next_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "[data-qa='sign-in-btn']")))
         next_button.click()
-		
+
         time.sleep(2)  # Waits for 3 seconds
-		
-		# Wait for the password input to be present, enter password
+
+        # Wait for the password input to be present, enter password
         password_input = wait.until(EC.presence_of_element_located((By.ID, "password")))
         password_input.send_keys(password)
-		
+
         time.sleep(3)  # Waits for 3 seconds
-		
-		# Click the Sign-In button to log in
+
+        # Click the Sign-In button to log in
         sign_in_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "[data-qa='sign-in-btn'][type='submit']")))
         sign_in_button.click()
         # Navigate to comments section
@@ -179,29 +179,35 @@ print("Keep the patience, data is getting loaded...")
 # url = 'https://www.washingtonpost.com/national-security/2024/01/30/israel-hamas-qatar-hostage-deal/'
 
 # Path to your JSON file
-file_path = 'URLSWashPostPolitics.json'
+file_path = 'URL/WPPoliticsURL_September-06,-2022_to_February-09,-2024.json'
+# Ensure the 'Data' directory exists
+output_dir = 'Data'
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
+
 # Open and read the JSON file
 with open(file_path, 'r') as file:
     # Load the content of the JSON file into a Python list
     urls = json.load(file)
     # Iterate over the list of URLs
     for url in urls:
-        count+=1
+        count += 1
         print(f" {count}. {url} is processing...")
-     #Function call for genarting the json name
+        # Function call for generating the json name
         json_name = generate_json_name(url)
-     # Function call for scraping headline, subheading, and article content
-        scrape_article_content(url,json_name)
+        json_name = os.path.join(output_dir, json_name)
+        # Function call for scraping headline, subheading, and article content
+        scrape_article_content(url, json_name)
 
         # Function Call for Fetching the URL of Embedded HTML
         iframe_url = fetch_comments_iframe_url(url, email, password)
 
-       # Proceed only if iframe_url is valid (a non-empty string)
+        # Proceed only if iframe_url is valid (a non-empty string)
         if iframe_url and isinstance(iframe_url, str):
             # Function Call for fetching the comments
             scrape_and_save_comments(iframe_url, json_name)
         else:
-            delete_count+=1
+            delete_count += 1
             print(f"Unable to fetch comments for {url} due to invalid iframe URL {iframe_url}.")
             if json_name and isinstance(json_name, str):
                 try:
@@ -210,6 +216,6 @@ with open(file_path, 'r') as file:
                 except OSError as e:
                     print(f"Error deleting JSON file {json_name}: {e}")
             else:
-                print("No JSON file found to delete.")  
+                print("No JSON file found to delete.")
 
-print(f"Congrats, data from {count-delete_count} articles is loaded successfully")
+print(f"Congrats, data from {count - delete_count} articles is loaded successfully.")
