@@ -62,7 +62,7 @@ def scrape_article_content(url, json_name):
         with open(json_name, 'w', encoding='utf-8') as f:
             json.dump(article_content, f, ensure_ascii=False, indent=4)
 
-        # print("Content saved to article_content.json."
+        # print("Content saved to article_content.json.")
     except Exception as e:
         print(f"Error scraping article content: {e}")
 
@@ -80,7 +80,6 @@ def fetch_comments_iframe_url(article_url, email, password):
         # Increase wait time
         time.sleep(3)  # Waits for 5 seconds
         # Wait for the Sign-In button and click it
-        wait = WebDriverWait(driver, 3)
         sign_in_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "[data-qa='sc-account-button']")))
         sign_in_button.click()
 
@@ -171,12 +170,21 @@ def scrape_and_save_comments(iframe_url, json_name):
 
 # Main Program
 
-email = "mailtoammit1@gmail.com"
-password = "7889857046@aA"
+# Load configuration from config.json
+config_path = "config.json"
+if os.path.exists(config_path):
+    with open(config_path, 'r') as config_file:
+        config = json.load(config_file)
+else:
+    print("Configuration file not found!")
+    exit(1)
+
+email = config.get("email")
+password = config.get("password")
+
 count = 0
 delete_count = 0
 print("Keep the patience, data is getting loaded...")
-# url = 'https://www.washingtonpost.com/national-security/2024/01/30/israel-hamas-qatar-hostage-deal/'
 
 # Path to your JSON file
 file_path = 'URL/WP_politics_URL_March-01,-2024_to_June-01,-2024.json'

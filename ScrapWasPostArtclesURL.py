@@ -118,11 +118,25 @@ else:
 # Extracting data from the configuration
 email = config.get("email")
 password = config.get("password")
-start_date = config.get("start_date")
-end_date = config.get("end_date")
-subsection = config.get("subsection")
+start_date = input("Enter the start date (e.g., January 01, 2017): ")
+end_date = input("Enter the end date (e.g., February 08, 2024): ")
 
-# Construct the subsection URL
+# Valid subsections for Washington Post
+valid_subsections = [
+    "politics", "election-2024", "opinions", "style", 
+    "investigations", "climate-environment", "business", 
+    "technology", "world", "sports"
+]
+
+print(f"\nPlease choose a subsection to scrape. The valid subsections are:\n{', '.join(valid_subsections)}\n")
+
+while True:
+    subsection = input(f"Enter the subsection you want to scrape: ").strip()
+    if subsection in valid_subsections:
+        break
+    else:
+        print("Invalid subsection. Please enter one of the valid options.")
+
 politics_section_link = f"https://www.washingtonpost.com/{subsection}/"
 
 print("Keep patience, URLs are loading...")
