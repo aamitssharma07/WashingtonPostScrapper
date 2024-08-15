@@ -21,21 +21,16 @@ Both scripts read the required inputs (email, password, start date, end date, an
 Configuration
 Create a config.json file in the root directory of your project with the following structure:
 
-json
-Copy code
+
 {
 "email": "your_email@example.com",
 "password": "your_password",
-"start_date": "January 01, 2017",
-"end_date": "February 08, 2024",
-"subsection": "politics"
 }
+
 Explanation of Configuration Fields:
 email: Your Washington Post account email.
 password: Your Washington Post account password.
-start_date: The start date of the articles you want to scrape (e.g., January 01, 2017).
-end_date: The end date of the articles you want to scrape (e.g., February 08, 2024).
-subsection: The subsection of The Washington Post you want to scrape (e.g., politics, business, world).
+
 Script Details
 ScrapWasPostArtclesURL.py
 Key Features:
