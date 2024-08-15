@@ -81,7 +81,11 @@ Step 3: Run ScrapWasPostArticlesContent.py to scrape the content and comments fr
 This script will create individual JSON files for each article, containing the headline, subheading, body, and comments.
 
 Notes
+
 Authentication: Both scripts require login credentials to access The Washington Post's content. Ensure you have entered valid email and password details in the config.json file.
+
 Subsections: The first script supports scraping from various subsections like politics, business, world, technology, and more. Make sure to specify a valid subsection in the config.json.
+
 Error Handling: The scripts include error handling for various cases, including missing elements, failed authentication, and more. Invalid URLs or errors during scraping may result in the JSON file being deleted to ensure clean data output.
+
 Customization: You can easily modify the scripts to scrape different subsections or adjust the date range according to your requirements.
