@@ -184,10 +184,18 @@ password = config.get("password")
 
 count = 0
 delete_count = 0
+# Path to your JSON file
+# file_path = 'URL/WP_politics_URL_March-01,-2024_to_June-01,-2024.json'
+url_dir = 'URL'
+json_files = [f for f in os.listdir(url_dir) if f.endswith('.json')]
+if not json_files:
+    print("No JSON files found in the URL directory.")
+    exit(1)
+
+file_path = os.path.join(url_dir, json_files[0])
 print("Keep the patience, data is getting loaded...")
 
-# Path to your JSON file
-file_path = 'URL/WP_politics_URL_March-01,-2024_to_June-01,-2024.json'
+
 # Ensure the 'Data' directory exists
 output_dir = 'Data'
 if not os.path.exists(output_dir):
