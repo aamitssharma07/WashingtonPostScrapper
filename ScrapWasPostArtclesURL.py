@@ -1,3 +1,5 @@
+import json
+import os
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -5,9 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException, WebDriverException
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-import json
 from datetime import datetime
-import os
 import time
 
 def parse_date_from_string(date_string):
@@ -106,28 +106,23 @@ def fetch_url_politics_section(url, email, password, start_date, end_date):
         driver.quit()
     return filename, valid_urls
 
-# User inputs
-email = input("Enter your email: ")
-password = input("Enter your password: ")
-start_date = input("Enter the start date (e.g., January 01, 2017): ")
-end_date = input("Enter the end date (e.g., February 08, 2024): ")
+# Load configuration from the config.json file
+config_path = "config.json"
+if os.path.exists(config_path):
+    with open(config_path, 'r') as config_file:
+        config = json.load(config_file)
+else:
+    print("Configuration file not found!")
+    exit(1)
 
-# Valid subsections for Washington Post
-valid_subsections = [
-    "politics", "election-2024", "opinions", "style", 
-    "investigations", "climate-environment", "business", 
-    "technology", "world", "sports"
-]
+# Extracting data from the configuration
+email = config.get("email")
+password = config.get("password")
+start_date = config.get("start_date")
+end_date = config.get("end_date")
+subsection = config.get("subsection")
 
-print(f"\nPlease choose a subsection to scrape. The valid subsections are:\n{', '.join(valid_subsections)}\n")
-
-while True:
-    subsection = input(f"Enter the subsection you want to scrape: ").strip()
-    if subsection in valid_subsections:
-        break
-    else:
-        print("Invalid subsection. Please enter one of the valid options.")
-
+# Construct the subsection URL
 politics_section_link = f"https://www.washingtonpost.com/{subsection}/"
 
 print("Keep patience, URLs are loading...")
