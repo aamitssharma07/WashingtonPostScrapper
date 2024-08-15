@@ -179,7 +179,7 @@ print("Keep the patience, data is getting loaded...")
 # url = 'https://www.washingtonpost.com/national-security/2024/01/30/israel-hamas-qatar-hostage-deal/'
 
 # Path to your JSON file
-file_path = 'URL/WPPoliticsURL_September-06,-2022_to_February-09,-2024.json'
+file_path = 'URL/WP_politics_URL_March-01,-2024_to_June-01,-2024.json'
 # Ensure the 'Data' directory exists
 output_dir = 'Data'
 if not os.path.exists(output_dir):

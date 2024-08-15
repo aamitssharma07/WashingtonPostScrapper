@@ -28,7 +28,7 @@ def fetch_url_politics_section(url, email, password, start_date, end_date):
     output_dir = 'URL'
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
-    filename = f"WPPoliticsURL_{start_date.replace(' ', '-')}_to_{end_date.replace(' ', '-')}.json"
+    filename = f"WP_{url.split('/')[-2]}_URL_{start_date.replace(' ', '-')}_to_{end_date.replace(' ', '-')}.json"
 
     try:
         driver.get(url)
@@ -67,10 +67,13 @@ def fetch_url_politics_section(url, email, password, start_date, end_date):
                         article_date_str = date_element.text
                         article_date = parse_date_from_string(article_date_str)
                         if article_date:
-                            print(f"Processing article dated: {article_date_str}")
+                            print(f"Processing article dated: {article_date_str} - URL: {href}")
                             all_urls.append((href, article_date))
-                            if article_date < end_date_dt:
-                                print("Article is older than the end date, stopping.")
+                            if start_date_dt <= article_date <= end_date_dt:
+                                valid_urls.append(href)
+                                print(f"Valid URL: {href} - Date: {article_date}")
+                            if article_date < start_date_dt:
+                                print("Article is older than the start date, stopping.")
                                 stop_loading = True
                                 break
                     except NoSuchElementException:
@@ -95,9 +98,6 @@ def fetch_url_politics_section(url, email, password, start_date, end_date):
                 print(f"Error interacting with the page: {e}")
                 break
 
-        # Filter valid URLs within the date range
-        valid_urls = [url for url, date in all_urls if start_date_dt <= date <= end_date_dt]
-
         with open(os.path.join(output_dir, filename), 'w') as file:
             json.dump(valid_urls, file)
     except Exception as e:
@@ -106,12 +106,30 @@ def fetch_url_politics_section(url, email, password, start_date, end_date):
         driver.quit()
     return filename, valid_urls
 
-email = "mailtoammit1@gmail.com"
-password = "7889857046@aA"
-politics_section_link = "https://www.washingtonpost.com/politics/"
-start_date = "September 05, 2022"  # Updated format
-end_date = "January 01, 2017"    # Updated format
+# User inputs
+email = input("Enter your email: ")
+password = input("Enter your password: ")
+start_date = input("Enter the start date (e.g., January 01, 2017): ")
+end_date = input("Enter the end date (e.g., February 08, 2024): ")
 
-print("Keep Patience, URLs are loading...")
+# Valid subsections for Washington Post
+valid_subsections = [
+    "politics", "election-2024", "opinions", "style", 
+    "investigations", "climate-environment", "business", 
+    "technology", "world", "sports"
+]
+
+print(f"\nPlease choose a subsection to scrape. The valid subsections are:\n{', '.join(valid_subsections)}\n")
+
+while True:
+    subsection = input(f"Enter the subsection you want to scrape: ").strip()
+    if subsection in valid_subsections:
+        break
+    else:
+        print("Invalid subsection. Please enter one of the valid options.")
+
+politics_section_link = f"https://www.washingtonpost.com/{subsection}/"
+
+print("Keep patience, URLs are loading...")
 filename, valid_urls = fetch_url_politics_section(politics_section_link, email, password, start_date, end_date)
-print(f"Congrats...URLs are successfully loaded into '{filename}', total {len(valid_urls)} articles.")
+print(f"Congrats... URLs are successfully loaded into '{filename}', total {len(valid_urls)} articles.")
