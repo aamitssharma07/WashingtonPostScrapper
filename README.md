@@ -60,14 +60,16 @@ Example Usage:
 The script processes each URL from the JSON file and generates a separate JSON file with the scraped content and comments.
 
 Directory Structure
+
 .
 ├── ScrapWasPostArtclesURL.py
 ├── ScrapWasPostArticlesContent.py
 ├── config.json
-├── URL/ # Folder where the first script stores fetched URLs.
-│ └── WP*<subsection>\_URL*<date_range>.json
-└── Data/ # Folder where the second script stores the article content and comments.
-└── <article_json_files>.json
+├── URL/  # Folder where the first script stores fetched URLs.
+│   └── WP_<subsection>_URL_<date_range>.json
+└── Data/  # Folder where the second script stores the article content and comments.
+    └── <article_json_files>.json
+
 
 Steps to Run the Scripts
 Step 1: Create a config.json file as described in the Configuration section.
