@@ -73,10 +73,13 @@ Directory Structure
 
 Steps to Run the Scripts
 Step 1: Create a config.json file as described in the Configuration section.
+
 Step 2: Run ScrapWasPostArtclesURL.py to fetch the article URLs from The Washington Post.
 This will create a JSON file containing a list of URLs based on the date range and subsection you specify in the config.json file.
+
 Step 3: Run ScrapWasPostArticlesContent.py to scrape the content and comments from the URLs generated in Step 2.
 This script will create individual JSON files for each article, containing the headline, subheading, body, and comments.
+
 Notes
 Authentication: Both scripts require login credentials to access The Washington Post's content. Ensure you have entered valid email and password details in the config.json file.
 Subsections: The first script supports scraping from various subsections like politics, business, world, technology, and more. Make sure to specify a valid subsection in the config.json.
