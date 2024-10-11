@@ -92,7 +92,7 @@ This script will create individual JSON files for each article, containing the h
 Notes
 Authentication: Both scripts require login credentials to access The Washington Post's content. Ensure you have entered valid email and password details in the config.json file.
 
-Subsections: The first script supports scraping from various subsections like politics, business, world, technology, and more. Make sure to specify a valid subsection in the config.json.
+Subsections: The first script supports scraping from various subsections like politics, business, world, technology, and more. Make sure to specify a valid subsection.
 
 Error Handling: The scripts include error handling for various cases, including missing elements, failed authentication, and more. Invalid URLs or errors during scraping may result in the JSON file being deleted to ensure clean data output.
 
