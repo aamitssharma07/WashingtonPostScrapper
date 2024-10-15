@@ -21,13 +21,22 @@ def fetch_url_politics_section(url, email, password, start_date, end_date):
     service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service)
     wait = WebDriverWait(driver, 15)
-    start_date_dt = datetime.strptime(start_date, "%B %d, %Y")
-    end_date_dt = datetime.strptime(end_date, "%B %d, %Y")
+    
+    try:
+        start_date_dt = datetime.strptime(start_date, "%B %d, %Y")
+        end_date_dt = datetime.strptime(end_date, "%B %d, %Y")
+    except ValueError as e:
+        print(f"Error parsing start/end date: {e}. Please ensure the date format is 'Month Day, Year'.")
+        driver.quit()
+        return None, []
+    
     all_urls = []
     valid_urls = []
     output_dir = 'URL'
+    
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
+    
     filename = f"WP_{url.split('/')[-2]}_URL_{start_date.replace(' ', '-')}_to_{end_date.replace(' ', '-')}.json"
 
     try:
@@ -66,9 +75,11 @@ def fetch_url_politics_section(url, email, password, start_date, end_date):
                         date_element = parent_element.find_element(By.CSS_SELECTOR, "span[data-testid='timestamp']")
                         article_date_str = date_element.text
                         article_date = parse_date_from_string(article_date_str)
+                        
                         if article_date:
                             print(f"Processing article dated: {article_date_str} - URL: {href}")
                             all_urls.append((href, article_date))
+                            # Check if the article date is within the range (inclusive)
                             if start_date_dt <= article_date <= end_date_dt:
                                 valid_urls.append(href)
                                 print(f"Valid URL: {href} - Date: {article_date}")
@@ -98,8 +109,14 @@ def fetch_url_politics_section(url, email, password, start_date, end_date):
                 print(f"Error interacting with the page: {e}")
                 break
 
-        with open(os.path.join(output_dir, filename), 'w') as file:
-            json.dump(valid_urls, file)
+        # Save the results
+        if valid_urls:
+            with open(os.path.join(output_dir, filename), 'w') as file:
+                json.dump(valid_urls, file)
+            print(f"URLs successfully saved to '{filename}', total {len(valid_urls)} valid articles.")
+        else:
+            print(f"No articles found between {start_date} and {end_date}.")
+            
     except Exception as e:
         print(f"An error occurred: {e}")
     finally:
@@ -118,8 +135,22 @@ else:
 # Extracting data from the configuration
 email = config.get("email")
 password = config.get("password")
-start_date = input("Enter the start date (e.g., January 01, 2017): ")
-end_date = input("Enter the end date (e.g., February 08, 2024): ")
+
+# Validate that start date is earlier than or equal to end date
+while True:
+    start_date = input("Enter the start date (e.g., January 01, 2017): ")
+    end_date = input("Enter the end date (e.g., February 08, 2024): ")
+
+    try:
+        start_date_dt = datetime.strptime(start_date, "%B %d, %Y")
+        end_date_dt = datetime.strptime(end_date, "%B %d, %Y")
+
+        if start_date_dt > end_date_dt:
+            print("Error: Start date must be earlier than or equal to end date. Please try again.")
+        else:
+            break
+    except ValueError:
+        print("Error parsing dates. Please use the correct format 'Month Day, Year'.")
 
 # Valid subsections for Washington Post
 valid_subsections = [
@@ -141,4 +172,8 @@ politics_section_link = f"https://www.washingtonpost.com/{subsection}/"
 
 print("Keep patience, URLs are loading...")
 filename, valid_urls = fetch_url_politics_section(politics_section_link, email, password, start_date, end_date)
-print(f"Congrats... URLs are successfully loaded into '{filename}', total {len(valid_urls)} articles.")
+
+if valid_urls:
+    print(f"Congrats... URLs are successfully loaded into '{filename}', total {len(valid_urls)} articles.")
+else:
+    print(f"No valid URLs found for the given date range.")
